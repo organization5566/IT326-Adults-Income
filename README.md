@@ -13,8 +13,8 @@
 Adults Income 
 
 ## Objective:
-The aim of this project is to predict whether an individual's income exceeds $50K per year based on various personal and demographic attributes, using data mining techniques.
+The aim of this project is to predict whether an individual’s income exceeds $50K per year based on various personal and demographic attributes, using data mining techniques. In addition to classification, we also plan to perform clustering to group individuals with similar socioeconomic characteristics.
 
 
 ## Project Motivation:  
-We selected this dataset because income prediction is a well-known classification problem in data mining. Our team is motivated to explore how factors such as age, education, occupation, and marital status influence income levels. By analyzing these patterns, we aim to gain insights into socioeconomic trends and support better decision-making in fields such as policy, business, and social research.  
+We selected this dataset because income prediction is a classic and well-studied problem in data mining, providing an opportunity to benchmark our results against prior work. Our team is motivated to explore how factors such as age, education, occupation, and marital status influence income levels. By analyzing these patterns, we aim to gain insights into socioeconomic trends and support better decision-making in areas such as public policy, business strategy, and social research.
