@@ -6,7 +6,7 @@
 - Aljohara Almuqati – 445202155
 - Hanan Alghamdi – 445201414
 - Khadijah Alshehri (Leader) – 445202138
-- Aljoury Alremi – 445200074
+- Aljoury Alreemi – 445200074
 
 
 ## Project Title:
