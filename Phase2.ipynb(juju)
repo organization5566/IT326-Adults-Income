@@ -1,0 +1,298 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "execution_count": 36,
+      "metadata": {
+        "id": "QuYu_PNw0fLd"
+      },
+      "outputs": [],
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df = pd.read_csv('Raw_dataset.csv')\n",
+        "print(df.head())\n",
+        "print(df.info())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "wqLZIf9z21SJ",
+        "outputId": "980b1804-4c0e-4bfa-cbf5-7f4b3725f8b4"
+      },
+      "execution_count": 37,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "   age  workclass  fnlwgt     education  educational-num      marital-status  \\\n",
+            "0   25    Private  226802          11th                7       Never-married   \n",
+            "1   38    Private   89814       HS-grad                9  Married-civ-spouse   \n",
+            "2   28  Local-gov  336951    Assoc-acdm               12  Married-civ-spouse   \n",
+            "3   44    Private  160323  Some-college               10  Married-civ-spouse   \n",
+            "4   18          ?  103497  Some-college               10       Never-married   \n",
+            "\n",
+            "          occupation relationship   race  gender  capital-gain  capital-loss  \\\n",
+            "0  Machine-op-inspct    Own-child  Black    Male             0             0   \n",
+            "1    Farming-fishing      Husband  White    Male             0             0   \n",
+            "2    Protective-serv      Husband  White    Male             0             0   \n",
+            "3  Machine-op-inspct      Husband  Black    Male          7688             0   \n",
+            "4                  ?    Own-child  White  Female             0             0   \n",
+            "\n",
+            "   hours-per-week native-country income  \n",
+            "0              40  United-States  <=50K  \n",
+            "1              50  United-States  <=50K  \n",
+            "2              40  United-States   >50K  \n",
+            "3              40  United-States   >50K  \n",
+            "4              30  United-States  <=50K  \n",
+            "<class 'pandas.core.frame.DataFrame'>\n",
+            "RangeIndex: 48842 entries, 0 to 48841\n",
+            "Data columns (total 15 columns):\n",
+            " #   Column           Non-Null Count  Dtype \n",
+            "---  ------           --------------  ----- \n",
+            " 0   age              48842 non-null  int64 \n",
+            " 1   workclass        48842 non-null  object\n",
+            " 2   fnlwgt           48842 non-null  int64 \n",
+            " 3   education        48842 non-null  object\n",
+            " 4   educational-num  48842 non-null  int64 \n",
+            " 5   marital-status   48842 non-null  object\n",
+            " 6   occupation       48842 non-null  object\n",
+            " 7   relationship     48842 non-null  object\n",
+            " 8   race             48842 non-null  object\n",
+            " 9   gender           48842 non-null  object\n",
+            " 10  capital-gain     48842 non-null  int64 \n",
+            " 11  capital-loss     48842 non-null  int64 \n",
+            " 12  hours-per-week   48842 non-null  int64 \n",
+            " 13  native-country   48842 non-null  object\n",
+            " 14  income           48842 non-null  object\n",
+            "dtypes: int64(6), object(9)\n",
+            "memory usage: 5.6+ MB\n",
+            "None\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df = df.replace(\"?\", pd.NA)"
+      ],
+      "metadata": {
+        "id": "oSj-mQTJ4c4f"
+      },
+      "execution_count": 38,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cols_with_missing = [\"workclass\", \"occupation\", \"native-country\"]\n",
+        "\n",
+        "for col in cols_with_missing:\n",
+        "  mode_value = df[col].mode()[0]\n",
+        "  df[col] = df[col].fillna(mode_value)"
+      ],
+      "metadata": {
+        "id": "K0fbUjOG4lQ2"
+      },
+      "execution_count": 39,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "le = LabelEncoder()\n",
+        "df[\"gender\"] = le.fit_transform(df[\"gender\"])"
+      ],
+      "metadata": {
+        "id": "8PovWdoZ5Oas"
+      },
+      "execution_count": 40,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df = pd.get_dummies(df, columns=[\"workclass\", \"education\", \"marital-status\"] ,drop_first=True)"
+      ],
+      "metadata": {
+        "id": "G8YCxM9w6ei8"
+      },
+      "execution_count": 41,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "numeric_cols = [\"age\", \"hours-per-week\", \"capital-gain\", \"capital-loss\"]\n",
+        "scaler = MinMaxScaler()\n",
+        "df[numeric_cols] = scaler.fit_transform(df[numeric_cols])"
+      ],
+      "metadata": {
+        "id": "LqYXklNn6xOz"
+      },
+      "execution_count": 42,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.to_csv(\"Preprocessed_step3.csv\", index=False)"
+      ],
+      "metadata": {
+        "id": "GgXVIbqf7eL7"
+      },
+      "execution_count": 43,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Perview of the dataset after preprocessing : \")\n",
+        "print(df.head())\n",
+        "print(\"\\nDataset information after preprocessing : \")\n",
+        "print(df.info())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "eVBT2lT67vtx",
+        "outputId": "0a323771-1ca5-4373-d5a1-c878f9cf046d"
+      },
+      "execution_count": 44,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Perview of the dataset after preprocessing : \n",
+            "        age  fnlwgt  educational-num         occupation relationship   race  \\\n",
+            "0  0.109589  226802                7  Machine-op-inspct    Own-child  Black   \n",
+            "1  0.287671   89814                9    Farming-fishing      Husband  White   \n",
+            "2  0.150685  336951               12    Protective-serv      Husband  White   \n",
+            "3  0.369863  160323               10  Machine-op-inspct      Husband  Black   \n",
+            "4  0.013699  103497               10     Prof-specialty    Own-child  White   \n",
+            "\n",
+            "   gender  capital-gain  capital-loss  hours-per-week  ... education_Masters  \\\n",
+            "0       1      0.000000           0.0        0.397959  ...             False   \n",
+            "1       1      0.000000           0.0        0.500000  ...             False   \n",
+            "2       1      0.000000           0.0        0.397959  ...             False   \n",
+            "3       1      0.076881           0.0        0.397959  ...             False   \n",
+            "4       0      0.000000           0.0        0.295918  ...             False   \n",
+            "\n",
+            "  education_Preschool  education_Prof-school  education_Some-college  \\\n",
+            "0               False                  False                   False   \n",
+            "1               False                  False                   False   \n",
+            "2               False                  False                   False   \n",
+            "3               False                  False                    True   \n",
+            "4               False                  False                    True   \n",
+            "\n",
+            "   marital-status_Married-AF-spouse  marital-status_Married-civ-spouse  \\\n",
+            "0                             False                              False   \n",
+            "1                             False                               True   \n",
+            "2                             False                               True   \n",
+            "3                             False                               True   \n",
+            "4                             False                              False   \n",
+            "\n",
+            "   marital-status_Married-spouse-absent  marital-status_Never-married  \\\n",
+            "0                                 False                          True   \n",
+            "1                                 False                         False   \n",
+            "2                                 False                         False   \n",
+            "3                                 False                         False   \n",
+            "4                                 False                          True   \n",
+            "\n",
+            "   marital-status_Separated  marital-status_Widowed  \n",
+            "0                     False                   False  \n",
+            "1                     False                   False  \n",
+            "2                     False                   False  \n",
+            "3                     False                   False  \n",
+            "4                     False                   False  \n",
+            "\n",
+            "[5 rows x 40 columns]\n",
+            "\n",
+            "Dataset information after preprocessing : \n",
+            "<class 'pandas.core.frame.DataFrame'>\n",
+            "RangeIndex: 48842 entries, 0 to 48841\n",
+            "Data columns (total 40 columns):\n",
+            " #   Column                                Non-Null Count  Dtype  \n",
+            "---  ------                                --------------  -----  \n",
+            " 0   age                                   48842 non-null  float64\n",
+            " 1   fnlwgt                                48842 non-null  int64  \n",
+            " 2   educational-num                       48842 non-null  int64  \n",
+            " 3   occupation                            48842 non-null  object \n",
+            " 4   relationship                          48842 non-null  object \n",
+            " 5   race                                  48842 non-null  object \n",
+            " 6   gender                                48842 non-null  int64  \n",
+            " 7   capital-gain                          48842 non-null  float64\n",
+            " 8   capital-loss                          48842 non-null  float64\n",
+            " 9   hours-per-week                        48842 non-null  float64\n",
+            " 10  native-country                        48842 non-null  object \n",
+            " 11  income                                48842 non-null  object \n",
+            " 12  workclass_Local-gov                   48842 non-null  bool   \n",
+            " 13  workclass_Never-worked                48842 non-null  bool   \n",
+            " 14  workclass_Private                     48842 non-null  bool   \n",
+            " 15  workclass_Self-emp-inc                48842 non-null  bool   \n",
+            " 16  workclass_Self-emp-not-inc            48842 non-null  bool   \n",
+            " 17  workclass_State-gov                   48842 non-null  bool   \n",
+            " 18  workclass_Without-pay                 48842 non-null  bool   \n",
+            " 19  education_11th                        48842 non-null  bool   \n",
+            " 20  education_12th                        48842 non-null  bool   \n",
+            " 21  education_1st-4th                     48842 non-null  bool   \n",
+            " 22  education_5th-6th                     48842 non-null  bool   \n",
+            " 23  education_7th-8th                     48842 non-null  bool   \n",
+            " 24  education_9th                         48842 non-null  bool   \n",
+            " 25  education_Assoc-acdm                  48842 non-null  bool   \n",
+            " 26  education_Assoc-voc                   48842 non-null  bool   \n",
+            " 27  education_Bachelors                   48842 non-null  bool   \n",
+            " 28  education_Doctorate                   48842 non-null  bool   \n",
+            " 29  education_HS-grad                     48842 non-null  bool   \n",
+            " 30  education_Masters                     48842 non-null  bool   \n",
+            " 31  education_Preschool                   48842 non-null  bool   \n",
+            " 32  education_Prof-school                 48842 non-null  bool   \n",
+            " 33  education_Some-college                48842 non-null  bool   \n",
+            " 34  marital-status_Married-AF-spouse      48842 non-null  bool   \n",
+            " 35  marital-status_Married-civ-spouse     48842 non-null  bool   \n",
+            " 36  marital-status_Married-spouse-absent  48842 non-null  bool   \n",
+            " 37  marital-status_Never-married          48842 non-null  bool   \n",
+            " 38  marital-status_Separated              48842 non-null  bool   \n",
+            " 39  marital-status_Widowed                48842 non-null  bool   \n",
+            "dtypes: bool(28), float64(4), int64(3), object(5)\n",
+            "memory usage: 5.8+ MB\n",
+            "None\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "UksgzUID8bsl"
+      },
+      "execution_count": 44,
+      "outputs": []
+    }
+  ]
+}
